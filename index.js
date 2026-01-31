@@ -1,27 +1,25 @@
 import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
 import { connectDB } from "./db.js";
 import authRoutes from "./routes/auth.js";
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+dotenv.config();
 
-// Middleware to parse JSON
+const app = express();
+
+/* 🔥 ADD THIS */
+app.use(cors({
+  origin: "*"
+}));
+
 app.use(express.json());
 
-// Routes
+connectDB();
+
 app.use("/api/auth", authRoutes);
 
-// Basic test route
-app.get("/", (req, res) => {
-  res.send("Backend is running 🚀");
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
-
-async function startServer() {
-  await connectDB();
-
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-  });
-}
-
-startServer();
